@@ -1,2 +1,4 @@
 ---
-# defaults file for ansible-smokeping
+smk_owner : OwnerName
+smk_contact : Contact@email.com
+smk_mailhost : localhost

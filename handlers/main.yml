@@ -1,2 +1,7 @@
 ---
-# handlers file for ansible-smokeping
+- name: restart apache
+  service: name=apache2 state=restarted
+
+# restart smokeping (tried reload instead but it seems it did not work)
+- name: restart smokeping
+  service: name=smokeping state=restarted

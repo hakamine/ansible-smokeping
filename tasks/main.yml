@@ -1,2 +1,30 @@
 ---
-# tasks file for ansible-smokeping
+- name: install package smokeping and dependencies
+  apt: pkg={{ item  }} state=installed
+  with_items:
+    - smokeping
+    - sendmail
+    
+- name: symbolic link of smokeping config for apache2
+  file: src=/etc/smokeping/apache2.conf dest=/etc/apache2/conf-available/smokeping.conf state=link
+  notify: restart apache
+  
+- name: enable apache2 smokeping config
+  command: a2enconf smokeping creates=/etc/apache2/conf-enabled/smokeping.conf
+  notify: restart apache
+
+- name: enable apache2 module cgi 
+  command: a2enmod cgid creates=/etc/apache2/mods-enabled/cgid.load
+  notify: restart apache
+
+- name: config file - General  
+  template: src=etc/smokeping/config.d/General.j2 dest=/etc/smokeping/config.d/General
+  notify: 
+    - restart smokeping
+    - restart apache
+
+- name: config file - Targets  
+  template: src=etc/smokeping/config.d/Targets.j2 dest=/etc/smokeping/config.d/Targets
+  notify: 
+    - restart smokeping
+    - restart apache
